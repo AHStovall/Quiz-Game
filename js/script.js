@@ -18,7 +18,7 @@ var questionBank = [
    questionTwo= {
         questionPrompt: "The <a> tag is used for what in HTML?",
         questionOption: ["Large amounts of Text", "Attributes", "Accessbility Captions", "Anchors, or links"],
-        questionCorrect: "JavaScript Object Notation"
+        questionCorrect: "Anchors, or links"
     },
     questionThree={
         questionPrompt: "How do you call a class in a CSS style sheet?",
@@ -43,10 +43,12 @@ function checkWin() {
 };
 
 //Function for the end of the game, regardless of approach
-// function endGame();
+function endGame() {
+    return;
+}
 
 function presentQuestion() {
-     questionOne.textContent = questionPrompt;
+     quizBox.append(questionBank);
      
 
 }
@@ -73,7 +75,7 @@ function startGame(){
     isWin = false;
     timerCount = 60;
     startTimer();
-   presentQuestion();
+    presentQuestion();
 }
 
 startButton.addEventListener("click", startGame());
