@@ -7,8 +7,9 @@ var quizBox = document.querySelector(".container");
 var answerBoxesEl = document.querySelector('.btn-layout');
 var startButton = document.querySelector("#btnStart");
 var continueButton = document.querySelector("#btnCont");
-var questionEl = document.querySelector('.question')
+var questionEl = document.querySelector('#question')
 var answerButtonEl = document.querySelector('.answer-buttons')
+var answer = {};
 
 
 var incorrect = "incorrect";
@@ -18,7 +19,7 @@ var questionOption;
 
 //variable attached to the scoreboard HTML query
 var scoreBoard = document.querySelector("#scoreBoard");
-
+var resetButton = document.querySelector("#reset-button");
 
 startButton.addEventListener("click", startGame);
 continueButton.addEventListener('click', ()=> {
@@ -68,9 +69,11 @@ var questionBank = [
 
 console.log(questionBank[0].questionPrompt);
 
+//presents the first question of the Array in front of the user, and looks to detect their input via a button press
 function presentQuestion() {
+
     questionEl.innerText = questionBank[0].questionPrompt;
-    questionEl.answers.forEach(answer => {
+    questionEl.answer.forEach(answer => {
         var button = document.createElement('button')
         button.innerText = answer.text
         button.classList.add('btn')
@@ -93,7 +96,7 @@ function clearState() {
     }
 }
 
-function selectAnswer() {
+function selectAnswer(e) {
     var selectedButton = e.target;
     var correct = selectedButton.dataset.correct;
     setClassStatus(document.body, correct);
@@ -129,13 +132,14 @@ function startTimer() {
         timer.textContent = timerCount;
         if (timerCount === 0) {
             clearInterval(timer);
-            endGame();
+            clearClassStatus();
+            scoreBoard.classList.remove('hide');
         }
     }, 1000);
 }
 
 //Knocked down time if question is marked as incorrect.
-document.getElementById('incorrect').addEventListener('click', function(){
+answer.incorrect.addEventListener('click', function(){
     timer -=10;
     document.getElementById('timerCount').innerHTML=timerCount;
 });
@@ -149,7 +153,4 @@ function startGame() {
     presentQuestion();
 }
 
-//Function for the end of the game, regardless of approach
-// function endGame() {
-//     return;
-// }
+resetButton.addEventListener("click", startGame);
