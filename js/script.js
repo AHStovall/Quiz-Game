@@ -66,16 +66,6 @@ var questionBank = [
     }];
 
 
-// function checkWin() {
-//     var questionsRemaining = questionBank = 0;
-//     if(questionBank.length === 0) {
-//         endGame();
-//     }
-//     if(timerCount === 0){
-//         endGame();
-//     }
-// };
-
 console.log(questionBank[0].questionPrompt);
 
 function presentQuestion() {
@@ -144,10 +134,11 @@ function startTimer() {
     }, 1000);
 }
 
-// document.getElementById('wrong').addEventListener('click', function(){
-//     timer -=10;
-//     document.getElementById('timerCount').innerHTML=timerCount;
-// });
+//Knocked down time if question is marked as incorrect.
+document.getElementById('incorrect').addEventListener('click', function(){
+    timer -=10;
+    document.getElementById('timerCount').innerHTML=timerCount;
+});
 
 
 function startGame() {
@@ -159,6 +150,6 @@ function startGame() {
 }
 
 //Function for the end of the game, regardless of approach
-function endGame() {
-    return;
-}
+// function endGame() {
+//     return;
+// }
