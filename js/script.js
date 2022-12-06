@@ -1,6 +1,8 @@
+//Timer variables
 var timer;
 var timerCount;
 
+//questions and answer variables
 var quizBox = document.querySelector(".container");
 var answerBoxesEl = document.querySelector('.btn-layout');
 var startButton = document.querySelector("#btnStart");
@@ -11,11 +13,11 @@ var answerButtonEl = document.querySelector('.answer-buttons')
 
 var incorrect = "incorrect";
 var correct = "correct";
-var questionPrompt = {};
-var questionOption = {};
-var isWin = false;
+var questionPrompt;
+var questionOption;
 
-var scoreBoard = "#scoreBoard";
+//variable attached to the scoreboard HTML query
+var scoreBoard = document.querySelector("#scoreBoard");
 
 
 startButton.addEventListener("click", startGame);
@@ -24,8 +26,10 @@ continueButton.addEventListener('click', ()=> {
     presentNextQuestion();
 })
 
+
+// List of questions and answers to be pulled in each section
 var questionBank = [
-    questionOne = {
+    {
         questionPrompt: "What does JSON stand for?",
         questionOption: [
             { text: "JavaScript Object Notation", correct: true },
@@ -33,7 +37,7 @@ var questionBank = [
             { text: "Joint System Operation Notification", correct: false },
             { text: "JavaScript Object Notification", correct: false }],
     },
-    questionTwo = {
+    {
         questionPrompt: "The <a> tag is used for what in HTML?",
         questionOption: [
             { text: "Large amounts of Text", correct: false },
@@ -42,7 +46,7 @@ var questionBank = [
             { text: "Anchors, or links", correct: true }],
 
     },
-    questionThree = {
+    {
         questionPrompt: "How do you call a class in a CSS style sheet?",
         questionOption: [
             { text: "#class", correct: false },
@@ -51,7 +55,7 @@ var questionBank = [
             { text: "!class", correct: false }],
 
     },
-    questionFour = {
+    {
         questionPrompt: "Which of these tags comes first on the page in HTML?",
         questionOption: [
             { text: "<main>", correct: false },
@@ -72,10 +76,10 @@ var questionBank = [
 //     }
 // };
 
-
+console.log(questionBank[0].questionPrompt);
 
 function presentQuestion() {
-    questionEl.innerText = quizBox[0].questionPrompt;
+    questionEl.innerText = questionBank[0].questionPrompt;
     questionEl.answers.forEach(answer => {
         var button = document.createElement('button')
         button.innerText = answer.text
