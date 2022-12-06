@@ -1,6 +1,7 @@
 var timer;
 var timerCount;
 var quizBox = document.querySelector(".container");
+var answerBoxesEl = document.querySelector('.btn-layout');
 var incorrect = "incorrect";
 var correct = "correct"; 
 var questionPrompt = {};
@@ -9,26 +10,45 @@ var isWin = false;
 var startButton = document.querySelector("#btnStart");
 var scoreBoard = "#scoreBoard";
 
+
+startButton.addEventListener("click", startGame);
+
+
 var questionBank = [
    questionOne = {
         questionPrompt: "What does JSON stand for?",
-        questionOption: ["JavaScript Object Notation", "JQuery Storage Operating Notice", "Joint System Operation Notification", "JavaScript Object Notification"],
-        questionCorrect: "JavaScript Object Notation"
+        questionOption: [
+            {text: "JavaScript Object Notation", correct: true}, 
+            {text: "JQuery Storage Operating Notice", correct: false},
+            {text: "Joint System Operation Notification", correct: false},
+            {text: "JavaScript Object Notification", correct: false}],
     },
-   questionTwo= {
+   questionTwo = {
         questionPrompt: "The <a> tag is used for what in HTML?",
-        questionOption: ["Large amounts of Text", "Attributes", "Accessbility Captions", "Anchors, or links"],
-        questionCorrect: "Anchors, or links"
+        questionOption: [
+            {text:"Large amounts of Text", correct: false}, 
+            {text:"Attributes", correct: false}, 
+            {text:"Accessbility Captions",  correct: false}, 
+            {text:"Anchors, or links", correct: true}],
+        
     },
     questionThree={
         questionPrompt: "How do you call a class in a CSS style sheet?",
-        questionOption: ["#class", ".class", "$class", "!class"],
-        questionCorrect: ".class"
+        questionOption: [
+            {text: "#class", correct: false},
+            {text:".class", correct: true},
+            {text:"$class", correct: false},
+            {text:"!class",correct: false}],
+        
     },
     questionFour={
         questionPrompt: "Which of these tags comes first on the page in HTML?",
-        questionOption: ["<main>", "<body>", "<head>", "h1"],
-        questionCorrect: "<head>"
+        questionOption: [
+            {text:"<main>", correct: false},
+            {text:"<body>", correct: false},
+            {text:"<head>", correct: true},
+            {text:"h1",correct: false}],
+        
     }];
 
 
@@ -72,11 +92,10 @@ function startTimer() {
 
 
 function startGame(){
-
-    isWin = false;
-    timerCount = 60;
-    startTimer();
+    console.log("Started.");
+    startButton.classList.add('hide');
+    quizBox.classList.remove('hide');
+    answerBoxesEl.classList.remove('hide');
     presentQuestion();
 }
 
-startButton.addEventListener("click", startGame());

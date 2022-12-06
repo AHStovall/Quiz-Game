@@ -4,17 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="css" href="./css/style.css">
+    <link rel="stylesheet" href="./style.css">
     <title>Quiz Game</title>
 </head>
 <body>
     <main class="container">
-        <button id="btnStart">Click Here to Start Quiz</button>
-            <div id="quiz">
-                <div id="question1"></div>
-                <div class="answerChoice"></div>
+        <div id="question hide">
+        <div id="answer-buttons" class="btn-layout hide">
+            <button class="btn">Answer 1</button>
+            <button class="btn">Answer 2</button>
+            <button class="btn">Answer 3</button>
+            <button class="btn">Answer 4</button>
+        </div>
+        </div>
+        <div class="buttons">
+            <button id="btnStart" class="start-btn">Click Here to Start Quiz</button>
+            <button id="btnCont" class="continue-btn hide">Continue</button>
+        </div>        
                 
-            </div>
+          
+            
         <div id="timer"></div>
         <div id="scoreBoard"></div> <!-- Set to display: none/hidden in css -->
     </main>
