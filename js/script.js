@@ -48,10 +48,11 @@ function endGame() {
 }
 
 function presentQuestion() {
-     quizBox.append(questionBank);
-     
-
-}
+    for (i=0; i<questionBank.length; i++) {
+    document.write(questionBank[0].questionPrompt = document.getElementById('#question1')),
+    questionBank[0].questionOption = document.getElementById('#question1'),
+    questionBank[0].questionCorrect = document.getElementById('#question1')
+}};
 
 //Timer Function
 function startTimer() {
