@@ -1,1 +1,7 @@
 # Quiz-Game
+
+This assignment focused on the development of a quiz game used to assist in studying with trackable leaderboards.
+
+The part is broken down into a three major sections: The game implementation, the timer and the leaderboard. The game implementation pulls from a master array of questions and answers and is designed to display them onto the screen. The timer should count down from 60 seconds, and is to be reduced by 10 seconds if a question is answered incorrectly. Finally, the leaderboard portion bases its score off of time remaining. This should be saved into local storage alongside a users entry of their intials, and should be called in a ranked format via an array.
+
+This project was the most challenging project so far for myself. I largely stuggled with the debugging portion of the project, and figuring out which variables were necessary for the success of the code, and I feel as if I had insufficient knowledge to complete this assignment effecitvely, without additional resources and assistance. While I feel proud of the work that I did, it is quite disheartening to see my shortcomings on this assignment and will look to resubmit this in a working state over the next couple of weeks.
