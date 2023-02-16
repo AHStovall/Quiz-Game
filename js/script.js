@@ -1,156 +1,186 @@
 //Timer variables
-var timer;
-var timerCount;
+var timerDisplay = document.getElementById("#time_display");
+
 
 //questions and answer variables
+var main = document.getElementsByTagName('main')[0]
 var quizBox = document.querySelector(".container");
-var answerBoxesEl = document.querySelector('.btn-layout');
-var startButton = document.querySelector("#btnStart");
-var continueButton = document.querySelector("#btnCont");
-var questionEl = document.querySelector('#question')
-var answerButtonEl = document.querySelector('.answer-buttons')
-var answer = {};
+// var answerBoxesEl = document.getElementById('.btn-layout');
+var questionDisplay = document.getElementById('question_display')
+var startButton = document.getElementById("btnStart");
+var answerList = document.getElementById('answer_list');
+var answerFeedback = document.getElementById('feedback')
 
 
-var incorrect = "incorrect";
-var correct = "correct";
-var questionPrompt;
-var questionOption;
 
 //variable attached to the scoreboard HTML query
-var scoreBoard = document.querySelector("#scoreBoard");
-var resetButton = document.querySelector("#reset-button");
+var initialsInput = document.getElementById('initials_input');
+var submitInitialsButton = document.getElementById('submit_initials_button');
+var scoreBoard = document.getElementById("#scoreboard_page");
+var clearScoresButton = document.getElementById("clear_scores");
+var viewScoreBoard = document.getElementById("scoreboard_link");
+var returnToStart = document.getElementById("return_start_page")
 
-startButton.addEventListener("click", startGame);
-continueButton.addEventListener('click', ()=> {
-    quizBox++;
-    presentNextQuestion();
-})
+
 
 
 // List of questions and answers to be pulled in each section
 var questionBank = [
     {
-        questionPrompt: "What does JSON stand for?",
-        questionOption: [
+        question: "What does JSON stand for?",
+        answer: [
             { text: "JavaScript Object Notation", correct: true },
             { text: "JQuery Storage Operating Notice", correct: false },
             { text: "Joint System Operation Notification", correct: false },
             { text: "JavaScript Object Notification", correct: false }],
+        correct_index: 1,
     },
     {
-        questionPrompt: "The <a> tag is used for what in HTML?",
-        questionOption: [
+        question: "The <a> tag is used for what in HTML?",
+        answer: [
             { text: "Large amounts of Text", correct: false },
             { text: "Attributes", correct: false },
             { text: "Accessbility Captions", correct: false },
             { text: "Anchors, or links", correct: true }],
-
+        correct_index: 4,
     },
     {
-        questionPrompt: "How do you call a class in a CSS style sheet?",
-        questionOption: [
+        question: "How do you call a class in a CSS style sheet?",
+        answer: [
             { text: "#class", correct: false },
             { text: ".class", correct: true },
             { text: "$class", correct: false },
             { text: "!class", correct: false }],
-
+        correct_index: 2,
     },
     {
-        questionPrompt: "Which of these tags comes first on the page in HTML?",
-        questionOption: [
+        question: "Which of these tags comes first on the page in HTML?",
+        answer: [
             { text: "<main>", correct: false },
             { text: "<body>", correct: false },
             { text: "<head>", correct: true },
             { text: "h1", correct: false }],
-
+        correct_index: 3,
     }];
 
+const startingTime = questions.length * 10;
+const timeError = 10;
+var remainingTime;
+var timer;
+var score;
 
-console.log(questionBank[0].questionPrompt);
-
-//presents the first question of the Array in front of the user, and looks to detect their input via a button press
-function presentQuestion() {
-
-    questionEl.innerText = questionBank[0].questionPrompt;
-    questionEl.answer.forEach(answer => {
-        var button = document.createElement('button')
-        button.innerText = answer.text
-        button.classList.add('btn')
-        if (answer.correct) {
-            button.dataset.correct = answer.correct
-        }
-        button.addEventListener('click', selectAnswer);
-        answerButtonEl.appendChild(button)
-    })
-}
-
-function presentNextQuestion() {
-    clearState()
-}
-
-function clearState() {
-    continueButton.classList.add('hide');
-    while(answerButtonEl.firstChild) {
-        answerButtonEl.removeChild(answerButtonEl.firstChild);
-    }
-}
-
-function selectAnswer(e) {
-    var selectedButton = e.target;
-    var correct = selectedButton.dataset.correct;
-    setClassStatus(document.body, correct);
-    Array.from(answerButtonEl.children).forEach(button => {
-        setClassStatus(button, button.dataset.correct)
-    });
-    if(quizBox.length !=0 && timerCount!=0) {
-    nextButton.classList.remove('hide');
-    } else {
-        scoreBoard.classList.remove('hide');
-    }
-}
-
-function setClassStatus(element, correct) {
-    clearClassStatus(element)
-    if (correct) {
-        element.classList.add('correct')
-    } else {
-        element.classList.add('wrong')
-
-    }
-}
-
-function clearClassStatus(element) {
-    element.classList.remove('correct')
-    element.classList.remove('wrong')
-}
-
-//Timer Function
-function startTimer() {
-    timer = setInterval(function () {
-        timerCount--;
-        timer.textContent = timerCount;
-        if (timerCount === 0) {
-            clearInterval(timer);
-            clearClassStatus();
-            scoreBoard.classList.remove('hide');
-        }
-    }, 1000);
-}
-
-//Knocked down time if question is marked as incorrect.
-answer.incorrect.addEventListener('click', function(){
-    timer -=10;
-    document.getElementById('timerCount').innerHTML=timerCount;
+function init() {
+    startButton.addEventListener('click', event => {
+    event.preventDefault()
+    displayQuestionPage()
 });
+answerList.addEventListener('click', function(event){
+    event.preventDefault()
+    if (event.target.matches('button')) {
+        var button = event.target;
+        if (button.classList.contains('correct')) {
+            answerFeedback.textContent = "Correct!"
+            questionNumbersBox.children[nextQuestionIndex - 1].classList.add('correct')
+            score++;
+        } else {
+            answerFeedback.textContent = "Wrong!"
+            questionNumbersBox.children[nextQuestionIndex - 1].classList.add('wrong')
+            remainingTime -= timePenalty
+    }
+    if (remainingTime > 0) displayNextQuestion()
+    else displayGetNamePage()
+    
+}
+})
+submitInitialsButton.addEventListener('click', event => {
+    event.preventDefault()
+    let initials = initialsInput.value.toUpperCase()
+    if (initials) {
+        let highscores = JSON.parse(localStorage.getItem('highscores')) || []
+        
+        timestamp = Date.now()
+        highscores.push({
+            'timestamp': timestamp,
+            'score': score,
+            'initials': initials,
+            'timeRemaining': remainingTime
+        })
+        highscores = highscores.sort((a, b) => {
+            if (a.score != b.score) return b.score - a.score
+            if (a.timeRemaining != b.timeRemaining) return b.timeRemaining - a.timeRemaining
+            if (a.timestamp != b.timestamp) return a.timestamp - b.timestamp
+            return 0
+        }
+        )}
+    });
+    localStorage.setItem('highscores', JSON.stringify(highscores))
+            
+    displayHighscorePage()
+    initialsInput.value = ""
 
 
-function startGame() {
-    console.log("Started.");
-    startButton.classList.add('hide');
-    quizBox.classList.remove('hide');
-    answerBoxesEl.classList.remove('hide');
-    presentQuestion();
+goToStartingPageButton.addEventListener('click', event => {
+event.preventDefault()
+displayStartingPage()
+})
+clearHighscoresButton.addEventListener('click', event => {
+var confirmed = confirm("You are about to clear all of your highscores. Would you like to continue?")
+if (confirmed) {
+    event.preventDefault()
+    localStorage.setItem('highscores', "[]")
+    displayHighscorePage()
+}
+})
+viewHighscoreLink.addEventListener('click', event => {
+event.preventDefault()
+displayHighscorePage()
+})
+
+// display the starting page
+displayStartingPage()
+};
+
+function displayPage(id) {
+    main.querySelectorAll('.page').forEach(page => {
+        if (page.id == id) {
+            page.classList.remove('hidden')
+        } else {
+            page.classList.add('hidden')
+        }
+    })
+    return 4
 }
 
-resetButton.addEventListener("click", startGame);
+function displayStartingPage() {
+    displayPage('starting_page')
+    
+    clearInterval(timer)
+    remainingTime = 0
+    timeDisplay.textContent = formatSeconds(remainingTime)
+}
+
+var nextQuestionIndex  
+var randomizedQuestions
+
+function displayQuestionPage() {
+    displayPage('question_page')
+
+    // setup the question numbers
+    questionNumbersBox.innerHTML = ""
+
+    for (let i = 0; i < questions.length; i++) {
+        const element = questions[i];
+        var el = document.createElement('span')
+        el.textContent = i + 1
+        questionNumbersBox.appendChild(el)
+    }
+
+
+    randomizedQuestions = randomizeArray(questions)
+    nextQuestionIndex = 0
+    score = 0
+
+   
+    startTimer();
+    displayNextQuestion();
+}
