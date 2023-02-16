@@ -8,31 +8,43 @@
     <title>Quiz Game</title>
 </head>
 <body>
-    <main class="container">
-        <div id="question" class = "hide">
-        <div id="answer-buttons" class="btn-layout hide">
-            <button class="btn">Answer 1</button>
-            <button class="btn">Answer 2</button>
-            <button class="btn">Answer 3</button>
-            <button class="btn">Answer 4</button>
-        </div>
-        </div>
-        <div class="buttons">
-            <button id="btnStart" class="start-btn">Click Here to Start Quiz</button>
-            <button id="btnCont" class="continue-btn hide">Continue</button>
-        </div>        
-        <div class="scoreBoard hide">
-            <div class="submit-box">
-                <p>Insert Initials Here</p>
-                <input type="Submit">
-            </div>
-            <button id="reset-button">Reset</button>
-        </div>
-          
-            
-        <div id="timer"></div>
-        <div id="scoreBoard"></div> <!-- Set to display: none/hidden in css -->
+    
+        <header class="row">
+            <a id="highscore_link" href="#">View Highscore</a>
+            <div id="time">Time: <div id="time_display">0</div></div>
+        </header>
+
+        <main class="container">
+            <section id="launch_page" class="page">
+                <!-- h1 and p tag -->
+                <button id="btnStart">Click Here to Start Quiz</button>
+            </section>
+       
+        <section class="question_page" class="page hidden">
+            <h2 id="question_display"></h2>
+            <div id="answer_list"></div>
+            <br>
+            <div id="feedback">Correct!</div>
+        </section>
+
+        <section id="get_name_page" class="page hidden">
+            <h2>All done!</h2>
+            <p>Final Score: <div id="score_display"></div></p>
+            <br>
+            <p>Enter initials:
+                <input type="text" name="initials" id="initials_input">
+                <button id="submit_initials_button">Submit</button>
+            </p>
+        </section>
+
+        <section id="highscore_page" class="page hidden">
+            <h2>Highscore</h2>
+            <div id="highscore_list"></div>
+
+            <button id="return_start_page">Go Back</button>
+            <button id="clear_scores">Clear HighScore List</button>
+        </section>
     </main>
-</body>
 <script src="./js/script.js"></script>
+</body>
 </html>
