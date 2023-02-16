@@ -10,7 +10,7 @@ var questionDisplay = document.getElementById('question_display')
 var startButton = document.getElementById("btnStart");
 var answerList = document.getElementById('answer_list');
 var answerFeedback = document.getElementById('feedback')
-
+var questionNumbersBox = document.getElementById('question_numbers_box')
 
 
 //variable attached to the scoreboard HTML query
@@ -20,7 +20,7 @@ var scoreBoard = document.getElementById("#scoreboard_page");
 var clearScoresButton = document.getElementById("clear_scores");
 var viewScoreBoard = document.getElementById("scoreboard_link");
 var returnToStart = document.getElementById("return_start_page")
-
+var scoreboardList = document.getElementById('scoreboard_list')
 
 
 
@@ -63,11 +63,19 @@ var questionBank = [
         correct_index: 3,
     }];
 
-const startingTime = questions.length * 10;
+const startingTime = questionBank.length * 10;
 const timeError = 10;
 var remainingTime;
 var timer;
 var score;
+
+function displayStartingPage() {
+    displayPage('starting_page')
+    
+    clearInterval(timer);
+    var remainingTime = 0;
+    timerDisplay.textContent = formatSeconds(remainingTime);
+};
 
 function init() {
     startButton.addEventListener('click', event => {
@@ -96,7 +104,7 @@ submitInitialsButton.addEventListener('click', event => {
     event.preventDefault()
     let initials = initialsInput.value.toUpperCase()
     if (initials) {
-        let highscores = JSON.parse(localStorage.getItem('highscores')) || []
+        var highscores = JSON.parse(localStorage.getItem('highscores')) || []
         
         timestamp = Date.now()
         highscores.push({
@@ -112,18 +120,19 @@ submitInitialsButton.addEventListener('click', event => {
             return 0
         }
         )}
+        localStorage.setItem('highscores', JSON.stringify(highscores))
     });
-    localStorage.setItem('highscores', JSON.stringify(highscores))
+    
             
     displayHighscorePage()
     initialsInput.value = ""
 
 
-goToStartingPageButton.addEventListener('click', event => {
+returnToStart.addEventListener('click', event => {
 event.preventDefault()
 displayStartingPage()
 })
-clearHighscoresButton.addEventListener('click', event => {
+clearScoresButton.addEventListener('click', event => {
 var confirmed = confirm("You are about to clear all of your highscores. Would you like to continue?")
 if (confirmed) {
     event.preventDefault()
@@ -131,7 +140,7 @@ if (confirmed) {
     displayHighscorePage()
 }
 })
-viewHighscoreLink.addEventListener('click', event => {
+viewScoreBoard.addEventListener('click', event => {
 event.preventDefault()
 displayHighscorePage()
 })
@@ -151,13 +160,7 @@ function displayPage(id) {
     return 4
 };
 
-function displayStartingPage() {
-    displayPage('starting_page')
-    
-    clearInterval(timer)
-    remainingTime = 0
-    timeDisplay.textContent = formatSeconds(remainingTime)
-};
+
 
 var nextQuestionIndex  
 var randomizedQuestions
@@ -167,15 +170,15 @@ function displayQuestionPage() {
 
     questionNumbersBox.innerHTML = ""
 
-    for (let i = 0; i < questions.length; i++) {
-        const element = questions[i];
+    for (let i = 0; i < questionBank.length; i++) {
+        const element = questionBank[i];
         var el = document.createElement('span')
         el.textContent = i + 1
         questionNumbersBox.appendChild(el)
     }
 
 
-    randomizedQuestions = randomizeArray(questions)
+    randomizedQuestions = randomizeArray(questionBank)
     nextQuestionIndex = 0
     score = 0
 
@@ -185,7 +188,7 @@ function displayQuestionPage() {
 };
 
 function displayNextQuestion() {
-    if (nextQuestionIndex < questions.length) { 
+    if (nextQuestionIndex < questionBank.length) { 
         const question = randomizedQuestions[nextQuestionIndex].question
         const answers = randomizedQuestions[nextQuestionIndex].answers
         const randomizedAnswers = randomizeArray(answers)
@@ -224,7 +227,7 @@ function displayHighscorePage() {
     displayPage('highscore_page')
     questionNumbersBox.innerHTML = ""
 
-    highscoreList.innerHTML = ""
+    scoreboardList.innerHTML = ""
 
     clearInterval(timer)
 
@@ -239,7 +242,7 @@ function displayHighscorePage() {
         let playerScore = highscore.score.toString().padStart(3, ' ')
         let timeRemaining = formatSeconds(highscore.timeRemaining)
         el.textContent = `${i}. ${initials} - Score: ${playerScore} - Time: ${timeRemaining}`
-        highscoreList.appendChild(el)
+        scoreboardList.appendChild(el)
     }
 };
 
@@ -258,7 +261,7 @@ function randomizeArray(array) {
 
 function startTimer() {
     remainingTime = startingTime
-    timeDisplay.textContent = formatSeconds(remainingTime)
+    timerDisplay.textContent = formatSeconds(remainingTime)
     
     timer = setInterval(function() {
         remainingTime--
@@ -267,7 +270,7 @@ function startTimer() {
             clearInterval(timer)
             displayGetNamePage()
         } else {
-            timeDisplay.textContent = formatSeconds(remainingTime)
+            timerDisplay.textContent = formatSeconds(remainingTime)
         }
     
     }, 1000)
