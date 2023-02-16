@@ -136,7 +136,7 @@ event.preventDefault()
 displayHighscorePage()
 })
 
-// display the starting page
+
 displayStartingPage()
 };
 
@@ -149,7 +149,7 @@ function displayPage(id) {
         }
     })
     return 4
-}
+};
 
 function displayStartingPage() {
     displayPage('starting_page')
@@ -157,7 +157,7 @@ function displayStartingPage() {
     clearInterval(timer)
     remainingTime = 0
     timeDisplay.textContent = formatSeconds(remainingTime)
-}
+};
 
 var nextQuestionIndex  
 var randomizedQuestions
@@ -165,7 +165,6 @@ var randomizedQuestions
 function displayQuestionPage() {
     displayPage('question_page')
 
-    // setup the question numbers
     questionNumbersBox.innerHTML = ""
 
     for (let i = 0; i < questions.length; i++) {
@@ -183,4 +182,101 @@ function displayQuestionPage() {
    
     startTimer();
     displayNextQuestion();
-}
+};
+
+function displayNextQuestion() {
+    if (nextQuestionIndex < questions.length) { 
+        const question = randomizedQuestions[nextQuestionIndex].question
+        const answers = randomizedQuestions[nextQuestionIndex].answers
+        const randomizedAnswers = randomizeArray(answers)
+        const correctAnswer = answers[randomizedQuestions[nextQuestionIndex].correct_index]
+        
+        questionDisplay.textContent = question
+        answersList.innerHTML = ""
+        answerFeedback.textContent = ""
+
+        for (let i = 0; i < randomizedAnswers.length; i++) {
+            let answer = randomizedAnswers[i]
+            let button = document.createElement("button")
+            button.classList.add('answer')
+            if (answer == correctAnswer)
+                button.classList.add('correct')
+            button.textContent = `${i + 1}. ${answer}`
+            answersList.appendChild(button)
+        }
+
+        nextQuestionIndex++
+    } else {
+        clearInterval(timer)
+        displayGetNamePage()
+    }
+};
+
+function displayGetNamePage() {
+    displayPage('get_name_page')
+    if (remainingTime < 0) remainingTime = 0
+    timeDisplay.textContent = formatSeconds(remainingTime)
+    scoreDisplay.textContent = score
+};
+
+
+function displayHighscorePage() {
+    displayPage('highscore_page')
+    questionNumbersBox.innerHTML = ""
+
+    highscoreList.innerHTML = ""
+
+    clearInterval(timer)
+
+    let highscores = JSON.parse(localStorage.getItem('highscores'))
+    
+    let i = 0
+    for (const key in highscores) {
+        i++
+        let highscore = highscores[key]
+        var el = document.createElement('div')
+        let initials = highscore.initials.padEnd(3, ' ')
+        let playerScore = highscore.score.toString().padStart(3, ' ')
+        let timeRemaining = formatSeconds(highscore.timeRemaining)
+        el.textContent = `${i}. ${initials} - Score: ${playerScore} - Time: ${timeRemaining}`
+        highscoreList.appendChild(el)
+    }
+};
+
+function randomizeArray(array) {
+    clone = [...array]
+    output = []
+    
+    while (clone.length > 0) {
+        let r = Math.floor(Math.random() * clone.length);
+        let i = clone.splice(r, 1)[0]
+        output.push(i)
+    }
+
+    return output
+};
+
+function startTimer() {
+    remainingTime = startingTime
+    timeDisplay.textContent = formatSeconds(remainingTime)
+    
+    timer = setInterval(function() {
+        remainingTime--
+    
+        if (remainingTime < 0) {
+            clearInterval(timer)
+            displayGetNamePage()
+        } else {
+            timeDisplay.textContent = formatSeconds(remainingTime)
+        }
+    
+    }, 1000)
+};
+
+function formatSeconds(seconds) {
+    let m = Math.floor(seconds / 60).toString().padStart(2, ' ')
+    let s = (seconds % 60).toString().padStart(2, '0')
+    return `${m}:${s}`
+};
+
+init();
