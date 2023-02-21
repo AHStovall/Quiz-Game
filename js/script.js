@@ -86,6 +86,7 @@ function init() {
         event.preventDefault()
         if (event.target.matches('button')) {
             var button = event.target;
+            console.log(button.classList);
             if (button.classList.contains('correct')) {
                 answerFeedback.textContent = "Correct!"
                 questionNumbersBox.children[nextQuestionIndex - 1].classList.add('correct')
@@ -204,8 +205,10 @@ function displayNextQuestion() {
             let answer = randomizedAnswers[i]
             let button = document.createElement("button")
             button.classList.add('answer')
-            if (answer.text == correctAnswer)
+            if (answer.correct == true) {
+                console.log('hello')
                 button.classList.add('correct')
+            }
             button.textContent = `${i + 1}. ${answer.text}`
             answerList.appendChild(button)
         }
