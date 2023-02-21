@@ -1,6 +1,6 @@
 //Timer variables
-var timerDisplay = document.getElementById("#time_display");
-
+var timerDisplay = document.getElementById("time_display");
+var timePenalty = 10;
 
 //questions and answer variables
 var main = document.getElementsByTagName('main')[0]
@@ -16,7 +16,7 @@ var questionNumbersBox = document.getElementById('question_numbers_box')
 //variable attached to the scoreboard HTML query
 var initialsInput = document.getElementById('initials_input');
 var submitInitialsButton = document.getElementById('submit_initials_button');
-var scoreBoard = document.getElementById("#scoreboard_page");
+var scoreBoard = document.getElementById("scoreboard_page");
 var clearScoresButton = document.getElementById("clear_scores");
 var viewScoreBoard = document.getElementById("scoreboard_link");
 var returnToStart = document.getElementById("return_start_page")
@@ -28,7 +28,7 @@ var scoreboardList = document.getElementById('scoreboard_list')
 var questionBank = [
     {
         question: "What does JSON stand for?",
-        answer: [
+        answers: [
             { text: "JavaScript Object Notation", correct: true },
             { text: "JQuery Storage Operating Notice", correct: false },
             { text: "Joint System Operation Notification", correct: false },
@@ -37,7 +37,7 @@ var questionBank = [
     },
     {
         question: "The <a> tag is used for what in HTML?",
-        answer: [
+        answers: [
             { text: "Large amounts of Text", correct: false },
             { text: "Attributes", correct: false },
             { text: "Accessbility Captions", correct: false },
@@ -46,7 +46,7 @@ var questionBank = [
     },
     {
         question: "How do you call a class in a CSS style sheet?",
-        answer: [
+        answers: [
             { text: "#class", correct: false },
             { text: ".class", correct: true },
             { text: "$class", correct: false },
@@ -55,7 +55,7 @@ var questionBank = [
     },
     {
         question: "Which of these tags comes first on the page in HTML?",
-        answer: [
+        answers: [
             { text: "<main>", correct: false },
             { text: "<body>", correct: false },
             { text: "<head>", correct: true },
@@ -70,99 +70,100 @@ var timer;
 var score;
 
 function displayStartingPage() {
-    displayPage('starting_page')
-    
-    clearInterval(timer);
-    var remainingTime = 0;
+    displayPage('launch_page')
+
+    // clearInterval(timer);
+    var remainingTime = startingTime;
     timerDisplay.textContent = formatSeconds(remainingTime);
 };
 
 function init() {
     startButton.addEventListener('click', event => {
-    event.preventDefault()
-    displayQuestionPage()
-});
-answerList.addEventListener('click', function(event){
-    event.preventDefault()
-    if (event.target.matches('button')) {
-        var button = event.target;
-        if (button.classList.contains('correct')) {
-            answerFeedback.textContent = "Correct!"
-            questionNumbersBox.children[nextQuestionIndex - 1].classList.add('correct')
-            score++;
-        } else {
-            answerFeedback.textContent = "Wrong!"
-            questionNumbersBox.children[nextQuestionIndex - 1].classList.add('wrong')
-            remainingTime -= timePenalty
-    }
-    if (remainingTime > 0) displayNextQuestion()
-    else displayGetNamePage()
-    
-}
-})
-submitInitialsButton.addEventListener('click', event => {
-    event.preventDefault()
-    let initials = initialsInput.value.toUpperCase()
-    if (initials) {
-        var highscores = JSON.parse(localStorage.getItem('highscores')) || []
-        
-        timestamp = Date.now()
-        highscores.push({
-            'timestamp': timestamp,
-            'score': score,
-            'initials': initials,
-            'timeRemaining': remainingTime
-        })
-        highscores = highscores.sort((a, b) => {
-            if (a.score != b.score) return b.score - a.score
-            if (a.timeRemaining != b.timeRemaining) return b.timeRemaining - a.timeRemaining
-            if (a.timestamp != b.timestamp) return a.timestamp - b.timestamp
-            return 0
+        event.preventDefault()
+        displayQuestionPage()
+    });
+    answerList.addEventListener('click', function (event) {
+        event.preventDefault()
+        if (event.target.matches('button')) {
+            var button = event.target;
+            if (button.classList.contains('correct')) {
+                answerFeedback.textContent = "Correct!"
+                questionNumbersBox.children[nextQuestionIndex - 1].classList.add('correct')
+                score++;
+            } else {
+                answerFeedback.textContent = "Wrong!"
+                questionNumbersBox.children[nextQuestionIndex - 1].classList.add('wrong')
+                remainingTime -= timePenalty
+            }
+            if (remainingTime > 0) displayNextQuestion()
+            else displayGetNamePage()
+
         }
-        )}
+    })
+    submitInitialsButton.addEventListener('click', event => {
+        event.preventDefault()
+        let initials = initialsInput.value.toUpperCase()
+        if (initials) {
+            var highscores = JSON.parse(localStorage.getItem('highscores')) || []
+
+            timestamp = Date.now()
+            highscores.push({
+                'timestamp': timestamp,
+                'score': score,
+                'initials': initials,
+                'timeRemaining': remainingTime
+            })
+            highscores = highscores.sort((a, b) => {
+                if (a.score != b.score) return b.score - a.score
+                if (a.timeRemaining != b.timeRemaining) return b.timeRemaining - a.timeRemaining
+                if (a.timestamp != b.timestamp) return a.timestamp - b.timestamp
+                return 0
+            }
+            )
+        }
         localStorage.setItem('highscores', JSON.stringify(highscores))
     });
-    
-            
-    displayHighscorePage()
+
+
+    // displayStartingPage()
     initialsInput.value = ""
 
 
-returnToStart.addEventListener('click', event => {
-event.preventDefault()
-displayStartingPage()
-})
-clearScoresButton.addEventListener('click', event => {
-var confirmed = confirm("You are about to clear all of your highscores. Would you like to continue?")
-if (confirmed) {
-    event.preventDefault()
-    localStorage.setItem('highscores', "[]")
-    displayHighscorePage()
-}
-})
-viewScoreBoard.addEventListener('click', event => {
-event.preventDefault()
-displayHighscorePage()
-})
+    returnToStart.addEventListener('click', event => {
+        event.preventDefault()
+        displayStartingPage()
+    })
+    clearScoresButton.addEventListener('click', event => {
+        var confirmed = confirm("You are about to clear all of your highscores. Would you like to continue?")
+        if (confirmed) {
+            event.preventDefault()
+            localStorage.setItem('highscores', "[]")
+            displayHighscorePage()
+        }
+    })
+    viewScoreBoard.addEventListener('click', event => {
+        event.preventDefault()
+        displayHighscorePage()
+    })
 
 
-displayStartingPage()
+    displayStartingPage()
 };
 
 function displayPage(id) {
     main.querySelectorAll('.page').forEach(page => {
-        if (page.id == id) {
+        if (page.getAttribute("id") == id) {
             page.classList.remove('hidden')
         } else {
             page.classList.add('hidden')
         }
     })
-    return 4
+    return;
 };
 
 
 
-var nextQuestionIndex  
+var nextQuestionIndex
 var randomizedQuestions
 
 function displayQuestionPage() {
@@ -182,30 +183,31 @@ function displayQuestionPage() {
     nextQuestionIndex = 0
     score = 0
 
-   
+
     startTimer();
     displayNextQuestion();
 };
 
 function displayNextQuestion() {
-    if (nextQuestionIndex < questionBank.length) { 
+    if (nextQuestionIndex < questionBank.length) {
         const question = randomizedQuestions[nextQuestionIndex].question
         const answers = randomizedQuestions[nextQuestionIndex].answers
+        console.log(answers)
         const randomizedAnswers = randomizeArray(answers)
         const correctAnswer = answers[randomizedQuestions[nextQuestionIndex].correct_index]
-        
+
         questionDisplay.textContent = question
-        answersList.innerHTML = ""
+        answerList.innerHTML = ""
         answerFeedback.textContent = ""
 
         for (let i = 0; i < randomizedAnswers.length; i++) {
             let answer = randomizedAnswers[i]
             let button = document.createElement("button")
             button.classList.add('answer')
-            if (answer == correctAnswer)
+            if (answer.text == correctAnswer)
                 button.classList.add('correct')
-            button.textContent = `${i + 1}. ${answer}`
-            answersList.appendChild(button)
+            button.textContent = `${i + 1}. ${answer.text}`
+            answerList.appendChild(button)
         }
 
         nextQuestionIndex++
@@ -218,8 +220,8 @@ function displayNextQuestion() {
 function displayGetNamePage() {
     displayPage('get_name_page')
     if (remainingTime < 0) remainingTime = 0
-    timeDisplay.textContent = formatSeconds(remainingTime)
-    scoreDisplay.textContent = score
+    timerDisplay.textContent = formatSeconds(remainingTime)
+    scoreBoard.textContent = score
 };
 
 
@@ -232,7 +234,7 @@ function displayHighscorePage() {
     clearInterval(timer)
 
     let highscores = JSON.parse(localStorage.getItem('highscores'))
-    
+
     let i = 0
     for (const key in highscores) {
         i++
@@ -247,9 +249,10 @@ function displayHighscorePage() {
 };
 
 function randomizeArray(array) {
+    console.log(array)
     clone = [...array]
     output = []
-    
+
     while (clone.length > 0) {
         let r = Math.floor(Math.random() * clone.length);
         let i = clone.splice(r, 1)[0]
@@ -262,17 +265,17 @@ function randomizeArray(array) {
 function startTimer() {
     remainingTime = startingTime
     timerDisplay.textContent = formatSeconds(remainingTime)
-    
-    timer = setInterval(function() {
+
+    timer = setInterval(function () {
         remainingTime--
-    
+
         if (remainingTime < 0) {
             clearInterval(timer)
             displayGetNamePage()
         } else {
             timerDisplay.textContent = formatSeconds(remainingTime)
         }
-    
+
     }, 1000)
 };
 
@@ -282,4 +285,5 @@ function formatSeconds(seconds) {
     return `${m}:${s}`
 };
 
+// displayStartingPage()
 init();
